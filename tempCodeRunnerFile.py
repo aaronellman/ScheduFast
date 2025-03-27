@@ -91,7 +91,7 @@ while col < len(rows_list[0]):  # Loop through columns
             #print(date)
             date_dict[date] = subjects.copy()
             subjects.clear()  # Clear subjects after appending
-            count = (session // 9) 
+            count += 1 
         
         # Ensure count does not exceed the length of dates_on_days[day_name]
         if day_name in dates_on_days:
