@@ -47,7 +47,13 @@ dates_on_days = {
     "Sat" : []
 }
 
-date_dict = {date: [] for date in refined_dates}
+#date_dict = {date: [] for date in refined_dates}
+date_dict = {}
+for date in refined_dates:
+    if re.search("Mon",date):
+        print(date)
+    date_dict[date] = []
+
 days_list = []
 subjects = []
 
@@ -82,8 +88,8 @@ while col < len(rows_list[0]):  # Loop through columns
             row = 0
         if (len(subjects) == 10) and (session > 0):
             #print(subjects)
-            print(date)
-            date_dict[date].append(subjects.copy())
+            #print(date)
+            date_dict[date] = subjects.copy()
             subjects.clear()  # Clear subjects after appending
             count = (session // 9) 
         
