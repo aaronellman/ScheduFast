@@ -83,9 +83,7 @@ while col < len(rows_list[0]):  # Loop through columns
         subjects.append(subject)
         subject = ""
         day_name = calendar.day_abbr[col]
-        if row == n:
-            col += 1
-            row = 0
+        
         if (len(subjects) == 10) and (session > 0):
             #print(subjects)
             #print(date)
