@@ -3,6 +3,22 @@ import numpy as np
 import math
 import re
 import calendar
+from datetime import datetime, timezone
+
+class Event():
+    summary = ""
+    start_time = ""
+    end_time = ""
+    time_zone = ""
+
+    def __init__(summary, start_time, end_time, time_zone):
+        self.summary = summary
+        self.start_time = start_time
+        self.end_time = end_time
+        self.time_zone = time_zone
+
+
+
 # Path to the Excel file
 file_path = "timetable.xlsx"
 
@@ -51,7 +67,8 @@ dates_on_days = {
 date_dict = {}
 for date in refined_dates:
     if re.search("Mon",date):
-        print(date)
+        #print(date)
+        pass
     date_dict[date] = []
 
 days_list = []
@@ -88,7 +105,7 @@ while col < len(rows_list[0]):  # Loop through columns
             #print(subjects)
             #print(date)
             date_dict[date] = subjects.copy()
-            subjects.clear()  # Clear subjects after appending
+            subjects.clear()  
             count += 1 
         
         # Ensure count does not exceed the length of dates_on_days[day_name]
@@ -99,21 +116,43 @@ while col < len(rows_list[0]):  # Loop through columns
         
         row += 1  # Increment row to avoid  infinite loop
         session += 1
+    col += 1      
 
-    col += 1  # Increment column to move to the next column
 
-print(date_dict)  
 
-def create_event(date_dict, start, end):
+def create_event(date_dict, dates_on_days):
+    for i in range(len(dates_on_days["Mon"])):
+        date = dates_on_days["Mon"]
+        for j in range(len(date_dict)):
+            if date_dict[i] == date:
+                schedule = date_dict[i]
+                for x in range(len(schedule)):
+                    if not math.isnan(schedule[x]):
+                        start_time = 8 + x
+                        event = Event(schedule[x], start_time)
+    
+    
+        
     event = {"summary": "", #TODO add value to this
-             "start":{
-               "dateTime": start,
-               "timeZone": "Africa/Johannesburg"} ,
-             "end":{
-               "dateTime" : end, 
-               "timeZone" : "Africa/Johannesburg"},
-                "reminders": {
-            "useDefault": False,  
-            "overrides": [] }
+            "start":{
+                "dateTime": "",
+                "timeZone": "Africa/Johannesburg"} ,
+            "end":{
+                "dateTime" : "", 
+                "timeZone" : "Africa/Johannesburg"},
+            "reminders": {
+                "useDefault": False,  
+                "overrides": [] }
             }
     return event
+
+def get_date():
+   pass 
+
+def format_datetime(dt,start_time):
+    #TODO
+    start_time = datetime.combine(pass, start_time(start_time, 0))
+    end_time
+
+print()
+create_event(date_dict,dates_on_days) 
