@@ -130,6 +130,7 @@ def create_event(date_dict, dates_on_days):
                     if not math.isnan(schedule[x]):
                         start_time = 8 + x
                         event = Event(schedule[x], start_time)
+
     
     
         
@@ -149,10 +150,11 @@ def create_event(date_dict, dates_on_days):
 def get_date():
    pass 
 
-def format_datetime(dt,start_time):
-    #TODO
-    start_time = datetime.combine(pass, start_time(start_time, 0))
-    end_time
+def format_datetime(dt,start_time,date):
+    current_year = str(datetime.now().year)
+    date_obj = datetime.strptime(date + " " + current_year, "%a %d %b %Y")
+    start_time = datetime.combine(date_obj, start_time(start_time, 0))
+    end_time = s
 
 print()
 create_event(date_dict,dates_on_days) 
