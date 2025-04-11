@@ -3,7 +3,7 @@ import numpy as np
 import math
 import re
 import calendar
-from datetime import datetime, timezone
+from datetime import datetime, timezone, time, timedelta
 
 class Event():
     summary = ""
@@ -150,11 +150,15 @@ def create_event(date_dict, dates_on_days):
 def get_date():
    pass 
 
-def format_datetime(dt,start_time,date):
+def format_datetime(dt,date):
     current_year = str(datetime.now().year)
     date_obj = datetime.strptime(date + " " + current_year, "%a %d %b %Y")
+
     start_time = datetime.combine(date_obj, start_time(start_time, 0))
-    end_time = s
+    end_time = start_time + timedelta(minutes=50)
+    start_time = start_time.isoformat()
+    return start_time, end_time
+    
 
 print()
 create_event(date_dict,dates_on_days) 
