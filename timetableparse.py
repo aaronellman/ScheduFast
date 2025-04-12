@@ -129,7 +129,7 @@ while col < len(rows_list[0]):  # Loop through columns
 
 
 
-def create_event(date_dict, dates_on_days):
+def create_events(date_dict, dates_on_days):
     events = []
     for i in range(len(dates_on_days["Mon"])):
         date = dates_on_days["Mon"][i]
@@ -157,5 +157,8 @@ def create_event(date_dict, dates_on_days):
                         events.append(event)
     return events
 
-print(create_event(date_dict, dates_on_days))
- 
+def add_events(events):
+    for event in events:
+        create_calendar_event(event)
+print(create_events(date_dict, dates_on_days))
+add_events(create_events(date_dict, dates_on_days))
