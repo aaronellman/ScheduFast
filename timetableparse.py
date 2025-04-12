@@ -5,19 +5,27 @@ import re
 import calendar
 from datetime import datetime, timezone, time, timedelta
 
+def format_datetime(date_str,start_hour):
+
+    current_year = str(datetime.now().year)
+    date_obj = datetime.strptime(str(date_str) + " " + current_year, "%a %d %b %Y")
+
+    start_time_obj = time(start_hour,0)
+    start_datetime = datetime.combine(date_obj, start_time_obj)
+    end_datetime = start_datetime + timedelta(minutes=50)
+    
+    return start_datetime.isoformat(), end_datetime.isoformat()
+
 class Event():
     summary = ""
     start_time = ""
     end_time = ""
-    time_zone = ""
 
-    def __init__(summary, start_time, end_time, time_zone):
+    def __init__(self, summary, start_hour, start_date):
         self.summary = summary
-        self.start_time = start_time
-        self.end_time = end_time
-        self.time_zone = time_zone
-
-
+        self.start_time = format_datetime(start_date, start_hour)[0] #TODO Pass in date fo
+        self.end_time = format_datetime(start_date, start_hour)[1]
+        
 
 # Path to the Excel file
 file_path = "timetable.xlsx"
@@ -121,43 +129,34 @@ while col < len(rows_list[0]):  # Loop through columns
 
 
 def create_event(date_dict, dates_on_days):
+    events = []
     for i in range(len(dates_on_days["Mon"])):
-        date = dates_on_days["Mon"]
+        date = dates_on_days["Mon"][i]
         for j in range(len(date_dict)):
-            if date_dict[i] == date:
-                schedule = date_dict[i]
+            if list(date_dict.keys())[j] == date:
+                schedule = date_dict[date]
                 for x in range(len(schedule)):
-                    if not math.isnan(schedule[x]):
+                    if schedule[x] is not None and not schedule[x] == "nan":
                         start_time = 8 + x
-                        event = Event(schedule[x], start_time)
+                        session = Event(schedule[x], start_time, date)
 
-    
-    
-        
-    event = {"summary": "", #TODO add value to this
-            "start":{
-                "dateTime": "",
-                "timeZone": "Africa/Johannesburg"} ,
-            "end":{
-                "dateTime" : "", 
-                "timeZone" : "Africa/Johannesburg"},
-            "reminders": {
-                "useDefault": False,  
-                "overrides": [] }
-            }
-    return event
+                        event = {"summary": session.summary,
+                            "start":{
+                                "dateTime": session.start_time,
+                                "timeZone": "Africa/Johannesburg"} ,
+                            "end":{
+                                "dateTime" : session.end_time, 
+                                "timeZone" : "Africa/Johannesburg"},
+                            "reminders": {
+                                "useDefault": False,  
+                                "overrides": [] }
+                            }
+                    
+                        events.append(event)
+    return events
 
-def get_date():
-   pass 
+print(create_event(date_dict, dates_on_days))
 
-def format_datetime(dt,date):
-    current_year = str(datetime.now().year)
-    date_obj = datetime.strptime(date + " " + current_year, "%a %d %b %Y")
-
-    start_time = datetime.combine(date_obj, start_time(start_time, 0))
-    end_time = start_time + timedelta(minutes=50)
-    start_time = start_time.isoformat()
-    return start_time, end_time
     
 
 print()
