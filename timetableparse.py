@@ -4,6 +4,7 @@ import math
 import re
 import calendar
 from datetime import datetime, timezone, time, timedelta
+from eventcreate import main as create_calendar_event
 
 def format_datetime(date_str,start_hour):
 
@@ -136,7 +137,8 @@ def create_event(date_dict, dates_on_days):
             if list(date_dict.keys())[j] == date:
                 schedule = date_dict[date]
                 for x in range(len(schedule)):
-                    if schedule[x] is not None and not schedule[x] == "nan":
+                    if str(schedule[x]) != "nan":
+                        #print(type(schedule[x]) , schedule[x])
                         start_time = 8 + x
                         session = Event(schedule[x], start_time, date)
 
@@ -156,8 +158,4 @@ def create_event(date_dict, dates_on_days):
     return events
 
 print(create_event(date_dict, dates_on_days))
-
-    
-
-print()
-create_event(date_dict,dates_on_days) 
+ 

@@ -10,7 +10,7 @@ from googleapiclient.errors import HttpError
 
 SCOPES = ["https://www.googleapis.com/auth/calendar"]
 
-def main():
+def main(events):
   """Shows basic usage of the Google Calendar API.
   Prints the start and name of the next 10 events on the user's calendar.
   """
@@ -34,16 +34,17 @@ def main():
       token.write(creds.to_json())
 
   try:
-    event = {"summary": "Cone5111 CR03", 
-             "start":{
-               "dateTime": "2025-03-29T17:00:00+02:00",
-               "timeZone": "Africa/Johannesburg"} ,
-             "end":{
-               "dateTime" : "2025-03-29T18:00:00+02:00", 
-               "timeZone" : "Africa/Johannesburg"},
-                "reminders": {
-            "useDefault": False,  
-            "overrides": [] }}
+    for i in range(len(events)):
+      event = {"summary": events[i], 
+              "start":{
+                "dateTime": "2025-03-29T17:00:00+02:00",
+                "timeZone": "Africa/Johannesburg"} ,
+              "end":{
+                "dateTime" : "2025-03-29T18:00:00+02:00", 
+                "timeZone" : "Africa/Johannesburg"},
+              "reminders": {
+              "useDefault": False,  
+              "overrides": [] }}
 
     service = build("calendar", "v3", credentials=creds)
 
