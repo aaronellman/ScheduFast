@@ -10,7 +10,7 @@ from pdftoexcel import extract_all_content_to_excel as convert
 
 def get_sheets():
     xls = pd.ExcelFile("timetable_converted.xlsx")
-    return xls.sheet_names[0]
+    return xls.sheet_names
 
 def format_datetime(date_str,start_hour):
 
@@ -65,13 +65,16 @@ def add_events(events):
     for event in events:
         create_calendar_event(event)
 
-def main(sheet):
+def main(sheet,sheet_num):
     # Path to the Excel file
-    xlsx_path = "converted_timetable.xlsx"
+    xlsx_path = "timetable_converted.xlsx"
     convert("timetable.pdf",xlsx_path)
 
     # Load the Excel file
-    df = pd.read_excel(xlsx_path, header=12,sheet_name=sheet)  # Set the correct row as headers
+    if sheet_num == 0:
+        df = pd.read_excel(xlsx_path, header=11,sheet_name=sheet)
+    else:
+        df = pd.read_excel(xlsx_path,header=None, sheet_name=sheet)
     df = df.dropna(how="all")
     df.rename(columns={df.columns[0]: "Time"}, inplace=True)
     #print(df.head(10))  # Check the new format
@@ -99,7 +102,7 @@ def main(sheet):
             if re.search(day_pattern,day):
                 refined_dates.append(day)
 
-    #print(refined_dates)
+    if sheet_num == 1: print(refined_dates)
     
 
     dates_on_days = {
@@ -167,4 +170,7 @@ def main(sheet):
         col += 1    
     #print(create_events(date_dict, dates_on_days))
     add_events(create_events(date_dict, dates_on_days))
-main(sheet=get_sheets())
+
+sheets = get_sheets()
+for sheet_num, sheet in enumerate(sheets):
+    main(sheet, sheet_num)

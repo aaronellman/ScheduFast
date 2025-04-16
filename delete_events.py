@@ -47,8 +47,9 @@ def delete_test_events(service):
     else:
         for event in events:
             # Modify this condition to match the events you want to delete
-            if 'PROG5121 CR03' or 'MAPC5112 CR03' or 'INSY5111 CR03' or 'ACADEMIC MERIDIAN' in event.get('summary', ''):
-                print(f"Deleting event: {event['summary']} ({event['id']})")
+            keywords = ['PROG5121 CR03', 'MAPC5112 CR03', 'INSY5111 CR03', 'ACADEMIC MERIDIAN', 'FAMILY DAY', 'FREEDOM DAY', 'GOOGLE HACKATHON', 'ASSESSMENTS', 'MAPC5112 WKSP']
+            if any(key in event.get('summary', '') for key in keywords) :
+                print(f"Deleting event: {event['summary']} ({event['id']})") 
                 delete_event(service, event['id'])
 
 def main():
