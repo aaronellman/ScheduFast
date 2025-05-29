@@ -1,4 +1,7 @@
 __pycache__/
+# Ignore all Excel files that start with 'Table_' and end in '.xlsx'
+Table_*.xlsx
+
 *.pyc
 
 token.json
