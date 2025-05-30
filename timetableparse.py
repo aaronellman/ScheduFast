@@ -66,18 +66,17 @@ def add_events(events):
     for event in events:
         create_calendar_event(event)
 
-def main(sheet,sheet_num):
-    #Convert, split, Read, Create Event
-
-    # Path to the Excel file
-    xlsx_path = "timetable_converted.xlsx"
+def main(xlsx_path, file_num):
+    #Convert, split, Read 
+    print(f"converting file: {xlsx_path}")
     convert("timetable.pdf",xlsx_path)
 
-    # Load the Excel file
-    if sheet_num == 0:
-        df = pd.read_excel(xlsx_path, header=11,sheet_name=sheet)
+    #getting rid of header when it is the first file only
+    if file_num == 0 or "Table_1" in xlsx_path:
+        df = pd.read_excel(xlsx_path, header=11)
     else:
-        df = pd.read_excel(xlsx_path,header=None, sheet_name=sheet)
+        df = pd.read_excel(xlsx_path,header=None)
+
     df = df.dropna(how="all")
     df.rename(columns={df.columns[0]: "Time"}, inplace=True)
     #print(df.head(10))  # Check the new format
@@ -90,6 +89,8 @@ def main(sheet,sheet_num):
 
     for row in df.values:
         row_list = row.tolist()  # Convert the row to a list
+        
+        print(f"\nRow_list[0]: {row_list[0]}\n")
         if re.search("H00",row_list[0]):
             rows_list.append(row_list)
             #print(row_list)
@@ -105,7 +106,7 @@ def main(sheet,sheet_num):
             if re.search(day_pattern,day):
                 refined_dates.append(day)
 
-    if sheet_num == 1: print(refined_dates)
+    if file_num == 1: print(refined_dates)
     
 
     dates_on_days = {
@@ -175,5 +176,8 @@ def main(sheet,sheet_num):
     add_events(create_events(date_dict, dates_on_days))
 
 files = split_sheets("timetable_converted.xlsx")
+print()
+print(files) #print debugging
+print()
 for file_num, file in enumerate(files):
     main(file, file_num)
