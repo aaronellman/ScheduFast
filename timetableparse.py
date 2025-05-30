@@ -6,6 +6,7 @@ import calendar
 from datetime import datetime, timezone, time, timedelta
 from eventcreate import main as create_calendar_event
 from pdftoexcel import extract_all_content_to_excel as convert
+from sheet_split import split_sheets
 
 
 def get_sheets():
@@ -171,6 +172,6 @@ def main(sheet,sheet_num):
     #print(create_events(date_dict, dates_on_days))
     add_events(create_events(date_dict, dates_on_days))
 
-sheets = get_sheets()
-for sheet_num, sheet in enumerate(sheets):
-    main(sheet, sheet_num)
+files = split_sheets("timetable_converted.xlsx")
+for file_num, file in enumerate(files):
+    main(file, file_num)
