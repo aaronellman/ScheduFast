@@ -67,6 +67,8 @@ def add_events(events):
         create_calendar_event(event)
 
 def main(sheet,sheet_num):
+    #Convert, split, Read, Create Event
+
     # Path to the Excel file
     xlsx_path = "timetable_converted.xlsx"
     convert("timetable.pdf",xlsx_path)

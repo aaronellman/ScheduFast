@@ -1,6 +1,7 @@
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
+from google.auth.transport.requests import Request
 import os
 
 # If modifying the scope, delete the file token.json.
@@ -47,7 +48,7 @@ def delete_test_events(service):
     else:
         for event in events:
             # Modify this condition to match the events you want to delete
-            keywords = ['PROG5121 CR03', 'MAPC5112 CR03', 'INSY5111 CR03', 'ACADEMIC MERIDIAN', 'FAMILY DAY', 'FREEDOM DAY', 'GOOGLE HACKATHON', 'ASSESSMENTS', 'MAPC5112 WKSP']
+            keywords = ['PROG5121 CR03', 'MAPC5112 CR03', 'INSY5111 CR03', 'CONE5111 CR03', 'ACADEMIC MERIDIAN', 'FAMILY DAY', 'FREEDOM DAY', 'GOOGLE HACKATHON', 'ASSESSMENTS', 'MAPC5112 WKSP']
             if any(key in event.get('summary', '') for key in keywords) :
                 print(f"Deleting event: {event['summary']} ({event['id']})") 
                 delete_event(service, event['id'])
