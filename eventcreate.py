@@ -41,7 +41,7 @@ def main(event):
                             sendUpdates = "none",
                             sendNotifications=False).execute()
     
-    print(f"Created Event {created_event}")
+    #print(f"Created Event {created_event}")
 
   except HttpError as error:
     print(f"An error occurred: {error}")

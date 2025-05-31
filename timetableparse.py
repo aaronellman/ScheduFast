@@ -36,29 +36,30 @@ class Event():
 
 def create_events(date_dict, dates_on_days):
     events = []
-    for i in range(len(dates_on_days["Mon"])):
-        date = dates_on_days["Mon"][i]
-        for j in range(len(date_dict)):
-            if list(date_dict.keys())[j] == date:
+    for day in ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]:
+        for i in range(len(dates_on_days[day])):
+            date = dates_on_days[day][i]
+            if date in date_dict:
                 schedule = date_dict[date]
                 for x in range(len(schedule)):
                     if str(schedule[x]) != "nan":
-                        #print(type(schedule[x]) , schedule[x])
                         start_time = 8 + x
                         session = Event(schedule[x], start_time, date)
-
-                        event = {"summary": session.summary,
-                            "start":{
+                        event = {
+                            "summary": session.summary,
+                            "start": {
                                 "dateTime": session.start_time,
-                                "timeZone": "Africa/Johannesburg"} ,
-                            "end":{
-                                "dateTime" : session.end_time, 
-                                "timeZone" : "Africa/Johannesburg"},
+                                "timeZone": "Africa/Johannesburg"
+                            },
+                            "end": {
+                                "dateTime": session.end_time,
+                                "timeZone": "Africa/Johannesburg"
+                            },
                             "reminders": {
-                                "useDefault": False,  
-                                "overrides": [] }
+                                "useDefault": False,
+                                "overrides": []
                             }
-                    
+                        }
                         events.append(event)
     return events
 
@@ -103,9 +104,9 @@ def main(xlsx_path, file_num):
         for day in week:
             if re.search(day_pattern,day):
                 refined_dates.append(day)
-
-    if file_num == 1: print(refined_dates)
-    
+    print()
+    print(f"Refined dates for file {file_num}: {refined_dates}")
+    print()
 
     dates_on_days = {
         "Mon" : [],
@@ -116,13 +117,11 @@ def main(xlsx_path, file_num):
         "Sat" : []
     }
 
-    #date_dict = {date: [] for date in refined_dates}
     date_dict = {}
     for date in refined_dates:
-        if re.search("Mon",date):
-            #print(date)
-            pass
         date_dict[date] = []
+
+    print(f"\nDate_dict: {date_dict}\n")
 
     days_list = []
     subjects = []
@@ -147,14 +146,17 @@ def main(xlsx_path, file_num):
     while col < len(rows_list[0]):  # Loop through columns
         row = 0  # Reset row for each column
         while row < n:  # Loop through rows
-            if (session * 6) == (n * 6):
-                break
+            #if (session * 6) == (n * 6):
+                #break
             subject = rows_list[row][col]
             subjects.append(subject)
             subject = ""
             day_name = calendar.day_abbr[col]
             
             if (len(subjects) == 10) and (session > 0):
+                print(f"\nAssigning subjects to date: {date}")
+                print(f"Subjects: {subjects}")
+
                 #print(subjects)
                 #print(date)
                 date_dict[date] = subjects.copy()
@@ -171,6 +173,11 @@ def main(xlsx_path, file_num):
             session += 1
         col += 1    
     #print(create_events(date_dict, dates_on_days))
+    print(f"\nFinal dates with assigned sessions:")
+    for k, v in date_dict.items():
+        print(f"{k}: {v}")
+
+
     add_events(create_events(date_dict, dates_on_days))
 
 convert("timetable.pdf","timetable_converted.xlsx")
