@@ -68,8 +68,6 @@ def add_events(events):
 
 def main(xlsx_path, file_num):
     #Convert, split, Read 
-    print(f"converting file: {xlsx_path}")
-    convert("timetable.pdf",xlsx_path)
 
     #getting rid of header when it is the first file only
     if file_num == 0 or "Table_1" in xlsx_path:
@@ -175,6 +173,7 @@ def main(xlsx_path, file_num):
     #print(create_events(date_dict, dates_on_days))
     add_events(create_events(date_dict, dates_on_days))
 
+convert("timetable.pdf","timetable_converted.xlsx")
 files = split_sheets("timetable_converted.xlsx")
 print()
 print(files) #print debugging
