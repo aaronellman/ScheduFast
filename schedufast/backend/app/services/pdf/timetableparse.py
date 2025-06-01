@@ -4,9 +4,9 @@ import math
 import re
 import calendar
 from datetime import datetime, timezone, time, timedelta
-from eventcreate import main as create_calendar_event
-from pdftoexcel import extract_all_content_to_excel as convert
-from sheet_split import split_sheets
+from app.services.google.eventcreate import main as create_calendar_event
+from app.services.pdf.pdftoexcel import extract_all_content_to_excel as convert
+from app.services.pdf.sheet_split import split_sheets
 
 
 def get_sheets():
@@ -180,8 +180,12 @@ def main(xlsx_path, file_num):
 
     add_events(create_events(date_dict, dates_on_days))
 
-convert("timetable.pdf","timetable_converted.xlsx")
-files = split_sheets("timetable_converted.xlsx")
+pdf_path = r"C:\vscode\Python\schedufast\data\input\timetable.pdf"
+
+convert(pdf_path,"timetable_converted.xlsx")
+
+xl_path = r"C:\vscode\Python\schedufast\backend\timetable_converted.xlsx"
+files = split_sheets(xl_path)
 print()
 print(files) #print debugging
 print()

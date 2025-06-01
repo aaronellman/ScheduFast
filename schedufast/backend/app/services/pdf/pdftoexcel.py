@@ -26,4 +26,5 @@ def extract_all_content_to_excel(pdf_path, excel_path):
     print(f"All content saved to {excel_path}")
 
 # Usage
-extract_all_content_to_excel("timetable.pdf", "timetable_converted.xlsx")
+pdf_path = r"C:\vscode\Python\schedufast\data\input\timetable.pdf"
+extract_all_content_to_excel(pdf_path, "timetable_converted.xlsx")

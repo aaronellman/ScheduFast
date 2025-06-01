@@ -7,3 +7,7 @@ Table_*.xlsx
 token.json
 
 credentials.json
+
+.venv/
+
+timetable_converted.xlsx
