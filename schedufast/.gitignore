@@ -16,6 +16,7 @@ credentials.json
 
 timetable_converted.xlsx
 
-yesterday_notes.txt
-
 .history
+
+../FastAPI/
+
