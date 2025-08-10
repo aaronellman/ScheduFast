@@ -22,9 +22,10 @@ def extract_all_content_to_excel(pdf_path, excel_path):
         for i, item in enumerate(all_data):
             if isinstance(item, pd.DataFrame):
                 item.to_excel(writer, sheet_name=f"Table_{i}", index=False)
-    return excel_path
     print(f"All content saved to {excel_path}")
+    return excel_path
+    
 
 # Usage
-pdf_path = r"C:\vscode\Python\schedufast\data\input\timetable.pdf"
-extract_all_content_to_excel(pdf_path, "timetable_converted.xlsx")
+#pdf_path = r"C:\vscode\Python\schedufast\data\input\timetable.pdf"
+#extract_all_content_to_excel(pdf_path, "timetable_converted.xlsx")

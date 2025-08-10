@@ -10,7 +10,7 @@ from googleapiclient.errors import HttpError
 
 SCOPES = ["https://www.googleapis.com/auth/calendar"]
 
-def main(event):
+async def create_event(event):
   """Shows basic usage of the Google Calendar API.
   Prints the start and name of the next 10 events on the user's calendar.
   """
@@ -46,5 +46,5 @@ def main(event):
   except HttpError as error:
     print(f"An error occurred: {error}")
 
-if __name__ == "__main__":
-    main()
+#if __name__ == "__main__":
+    #main()

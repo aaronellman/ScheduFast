@@ -16,4 +16,4 @@ def split_sheets(input_file):
     print()
     return files
 
-split_sheets("timetable_converted.xlsx")
+#split_sheets("timetable_converted.xlsx")

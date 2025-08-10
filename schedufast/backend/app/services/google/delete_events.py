@@ -4,6 +4,8 @@ from googleapiclient.discovery import build
 from google.auth.transport.requests import Request
 import os
 
+#TODO: Add try-catch block for when the token/credentials expire.
+
 # If modifying the scope, delete the file token.json.
 SCOPES = ['https://www.googleapis.com/auth/calendar']
 
@@ -61,3 +63,5 @@ def main():
     delete_test_events(service)
 
 main()
+
+

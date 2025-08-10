@@ -10,4 +10,12 @@ credentials.json
 
 .venv/
 
+.env
+
+.lock
+
 timetable_converted.xlsx
+
+yesterday_notes.txt
+
+.history

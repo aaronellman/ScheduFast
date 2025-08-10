@@ -4,9 +4,10 @@ import math
 import re
 import calendar
 from datetime import datetime, timezone, time, timedelta
-from app.services.google.eventcreate import main as create_calendar_event
+from app.services.google.eventcreate import create_event
 from app.services.pdf.pdftoexcel import extract_all_content_to_excel as convert
 from app.services.pdf.sheet_split import split_sheets
+import os
 
 
 def get_sheets():
@@ -63,11 +64,11 @@ def create_events(date_dict, dates_on_days):
                         events.append(event)
     return events
 
-def add_events(events):
+async def add_events(events):
     for event in events:
-        create_calendar_event(event)
+        await create_event(event)
 
-def main(xlsx_path, file_num):
+async def main(xlsx_path, file_num):
     #Convert, split, Read 
 
     #getting rid of header when it is the first file only
@@ -178,16 +179,24 @@ def main(xlsx_path, file_num):
         print(f"{k}: {v}")
 
 
-    add_events(create_events(date_dict, dates_on_days))
+    await add_events(create_events(date_dict, dates_on_days))
 
-pdf_path = r"C:\vscode\Python\schedufast\data\input\timetable.pdf"
+async def process_file(new_path):
+    pdf_path = new_path
+    file_name = getfilename(new_path)
+    xl_path = pdf_path.replace(".pdf",".xlsx")
+    filename = file_name.replace(".pdf",".xlsx")
+    convert(pdf_path,xl_path)
+    files = split_sheets(xl_path)
+    print()
+    print(files) #print debugging
+    print()
 
-convert(pdf_path,"timetable_converted.xlsx")
+    for file_num, file in enumerate(files):
+        print(f"This is the file currently being parsed:{file}")
+        await main(file, file_num)
 
-xl_path = r"C:\vscode\Python\schedufast\backend\timetable_converted.xlsx"
-files = split_sheets(xl_path)
-print()
-print(files) #print debugging
-print()
-for file_num, file in enumerate(files):
-    main(file, file_num)
+def getfilename(path):
+    return os.path.basename(path)
+
+
