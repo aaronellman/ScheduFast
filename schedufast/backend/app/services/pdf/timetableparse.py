@@ -64,11 +64,12 @@ def create_events(date_dict, dates_on_days):
                         events.append(event)
     return events
 
-async def add_events(events):
+def add_events(events):
     for event in events:
-        await create_event(event)
+        create_event(event)
 
-async def main(xlsx_path, file_num):
+def main(xlsx_path, file_num):
+    print(f"main() called with: {xlsx_path}, file_num: {file_num}")
     #Convert, split, Read 
 
     #getting rid of header when it is the first file only
@@ -179,22 +180,25 @@ async def main(xlsx_path, file_num):
         print(f"{k}: {v}")
 
 
-    await add_events(create_events(date_dict, dates_on_days))
+    add_events(create_events(date_dict, dates_on_days))
 
-async def process_file(new_path):
+def process_file(new_path):
     pdf_path = new_path
     file_name = getfilename(new_path)
     xl_path = pdf_path.replace(".pdf",".xlsx")
     filename = file_name.replace(".pdf",".xlsx")
     convert(pdf_path,xl_path)
+
+    print("Calling split_sheets...")  # Debugging
     files = split_sheets(xl_path)
-    print()
-    print(files) #print debugging
-    print()
+    print(f"Files from split_sheets: {files}")  # Debugging
 
     for file_num, file in enumerate(files):
         print(f"This is the file currently being parsed:{file}")
-        await main(file, file_num)
+        try:
+            main(file, file_num)
+        except Exception as e:
+            print(f"Exception in process_file for file {file_num}: {e}")
 
 def getfilename(path):
     return os.path.basename(path)

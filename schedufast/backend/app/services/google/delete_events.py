@@ -50,10 +50,11 @@ def delete_test_events(service):
     else:
         for event in events:
             # Modify this condition to match the events you want to delete
-            keywords = ['PROG5121 CR03', 'MAPC5112 CR03', 'INSY5111 CR03', 'CONE5111 CR03', 'ACADEMIC MERIDIAN', 'FAMILY DAY', 'FREEDOM DAY', 'GOOGLE HACKATHON', 'ASSESSMENTS', 'MAPC5112 WKSP']
+            keywords = ['PROG5121 CR03', 'MAPC5112 CR03', 'INSY5111 CR03', 'CONE5111 CR03', 'ACADEMIC MERIDIAN', 'FAMILY DAY', 'FREEDOM DAY', 'GOOGLE HACKATHON', 'ASSESSMENTS', 'MAPC5112 WKSP', 'ITPP5112 CR02', 'SOCIAL MERIDIAN', 'WORKERS DAY', 'MAPC5112 LR24','ITPP5112 CR02']
             if any(key in event.get('summary', '') for key in keywords) :
                 print(f"Deleting event: {event['summary']} ({event['id']})") 
                 delete_event(service, event['id'])
+                
 
 def main():
     # Authenticate and create a service object

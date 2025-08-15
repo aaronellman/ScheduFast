@@ -1,6 +1,8 @@
 import tempfile
 from fastapi import FastAPI,UploadFile, File
 from app.services.pdf.timetableparse import process_file
+import asyncio
+from concurrent.futures import ThreadPoolExecutor
 
 app = FastAPI()
 
@@ -18,9 +20,10 @@ async def upload_pdf(file: UploadFile = File(...)):
         temp.flush()
         temp_path = temp.name
         
-        await process_file(temp_path)
+    loop = asyncio.get_running_loop()
+    await loop.run_in_executor(None, process_file, temp_path)
 
-        import os
-        os.remove(temp_path)
+    import os
+    os.remove(temp_path)
 
     return {"message": "timetable successfully added to google calendar"}

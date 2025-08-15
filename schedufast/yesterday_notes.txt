@@ -17,7 +17,6 @@ Temporarily simplify main to a minimal version and gradually add complexity back
 
 Check if any third-party library you use is known to have issues when used in async contexts or certain environments.
 
-If you use multiprocessing, threading, or subprocesses, verify their behavior and lifecycle management.
 
 Fixes Tried for stopping at first page:
     
