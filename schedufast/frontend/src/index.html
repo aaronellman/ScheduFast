@@ -49,6 +49,20 @@
             transform: translateY(-5px);
             box-shadow: 0 20px 40px rgba(1, 154, 236, 0.3);
         }
+
+        .arrow-animation {
+            animation: drawArrow 2s ease-in-out infinite;
+        }
+
+        @keyframes drawArrow {
+            0%, 100% { stroke-dashoffset: 0; }
+            50% { stroke-dashoffset: 10; }
+        }
+
+        .timetable-blur {
+            filter: blur(0.5px);
+            transition: filter 0.3s ease;
+        }
     </style>
 </head>
 <body class="bg-custom-white font-sans">
@@ -124,58 +138,81 @@
                     </div>
                 </div>
                 
-                <!-- Right Column - Visual -->
+                <!-- Right Column - Before/After Visual -->
                 <div class="relative">
-                    <div class="bg-white rounded-2xl shadow-2xl p-6 hero-animation">
-                        <!-- Mock Calendar Interface -->
-                        <div class="bg-gray-50 rounded-lg p-4 mb-4">
-                            <div class="flex items-center justify-between mb-3">
-                                <h3 class="font-semibold text-gray-800">Your Class Schedule</h3>
-                                <div class="flex space-x-1">
-                                    <div class="w-3 h-3 bg-red-400 rounded-full"></div>
-                                    <div class="w-3 h-3 bg-yellow-400 rounded-full"></div>
-                                    <div class="w-3 h-3 bg-green-400 rounded-full"></div>
-                                </div>
+                    <div class="space-y-8">
+                        <!-- BEFORE: PDF Timetable -->
+                        <div class="relative">
+                            <div class="absolute -top-3 -left-3 bg-white text-custom-blue px-3 py-1 rounded-full text-sm font-semibold shadow-lg z-10">
+                                BEFORE
                             </div>
-                            
-                            <!-- Calendar Events -->
-                            <div class="space-y-2">
-                                <div class="bg-custom-blue text-white p-3 rounded-lg">
-                                    <div class="font-medium">Mathematics 101</div>
-                                    <div class="text-sm opacity-90">Mon, Wed, Fri • 9:00-10:30 AM</div>
+                            <div class="bg-white rounded-xl shadow-xl p-4 hero-animation">
+                                <!-- Real Timetable Image -->
+                                <div class="bg-white border-2 border-gray-200 rounded-lg p-2 overflow-hidden">
+                                    <img src="timetable-before.png" d="timetableImage" class="w-full h-auto timetable-blur rounded-lg blur-[1px]" alt="Academic Timetable"  />
                                 </div>
-                                <div class="bg-green-500 text-white p-3 rounded-lg">
-                                    <div class="font-medium">Physics Lab</div>
-                                    <div class="text-sm opacity-90">Tuesday • 2:00-5:00 PM</div>
-                                </div>
-                                <div class="bg-purple-500 text-white p-3 rounded-lg">
-                                    <div class="font-medium">Computer Science</div>
-                                    <div class="text-sm opacity-90">Thu • 11:00 AM-12:30 PM</div>
-                                </div>
-                                <div class="bg-orange-500 text-white p-3 rounded-lg">
-                                    <div class="font-medium">Literature</div>
-                                    <div class="text-sm opacity-90">Friday • 3:00-4:30 PM</div>
+                                
+                                <!-- PDF Icon -->
+                                <div class="flex items-center justify-center mt-2">
+                                    <svg class="w-6 h-6 text-red-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    <span class="text-sm text-gray-600 font-medium">timetable.pdf</span>
                                 </div>
                             </div>
                         </div>
-                        
-                        <!-- Upload Indicator -->
-                        <div class="border-2 border-dashed border-custom-light-blue rounded-lg p-6 text-center">
-                            <svg class="w-12 h-12 text-custom-blue mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+
+                        <!-- Hand-drawn Curved Arrow -->
+                        <div class="flex justify-center relative">
+                            <svg width="120" height="80" viewBox="0 0 120 80" fill="none" xmlns="http://www.w3.org/2000/svg" class="transform rotate-12">
+                                <path d="M20 20 Q60 5 100 40 Q105 45 100 50" 
+                                      stroke="white" 
+                                      stroke-width="3" 
+                                      stroke-linecap="round" 
+                                      stroke-linejoin="round"
+                                      stroke-dasharray="5,3"
+                                      class="arrow-animation"
+                                      fill="none"/>
+                                <!-- Arrow head -->
+                                <div class="w-0 h-0 border-l-8 border-r-8 border-t-8 border-l-transparent border-r-transparent border-t-white"></div>
+
+
                             </svg>
-                            <p class="text-gray-600">Drop your PDF timetable here</p>
-                            <p class="text-sm text-gray-500 mt-1">or click to browse</p>
                         </div>
-                    </div>
-                    
-                    <!-- Floating Success Message -->
-                    <div class="absolute -bottom-4 -right-4 bg-green-500 text-white px-4 py-2 rounded-full shadow-lg hero-animation" style="animation-delay: 1s;">
-                        <div class="flex items-center">
-                            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-                            </svg>
-                            <span class="text-sm font-medium">Synced to Google Calendar!</span>
+
+                        <!-- AFTER: Google Calendar -->
+                        <div class="relative">
+                            <div class="absolute -top-3 -right-3 bg-green-500 text-white px-3 py-1 rounded-full text-sm font-semibold shadow-lg z-10">
+                                AFTER
+                            </div>
+                            <div class="bg-white rounded-xl shadow-xl p-4 hero-animation" style="animation-delay: 0.5s;">
+                                <!-- Mock Google Calendar -->
+                                <div class="bg-white border border-gray-200 rounded-lg">
+                                    <!-- Calendar Header -->
+                                    <div class="flex items-center justify-between p-3 border-b border-gray-200 bg-gray-50">
+                                        <div class="flex items-center space-x-2">
+                                            <svg class="w-5 h-5 text-blue-600" viewBox="0 0 24 24" fill="currentColor">
+                                                <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/>
+                                            </svg>
+                                            <span class="font-semibold text-gray-800">Google Calendar</span>
+                                        </div>
+                                        <div class="text-sm text-gray-600">Month View</div>
+                                    </div>
+                                    
+                                    <!-- Calendar Events -->
+                                    <div class="p-3 space-y-2">
+                                        <img src="timetable-after.png" alt="Timetable" class="w-full rounded-lg blur-[1px]">
+                                    </div>
+                                    
+                                    <!-- Sync indicator -->
+                                    <div class="flex items-center justify-center p-2 bg-green-50 border-t">
+                                        <svg class="w-4 h-4 text-green-500 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                        </svg>
+                                        <span class="text-xs text-green-600 font-medium">Automatically synced!</span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -203,8 +240,38 @@
     </div>
 
     <script>
+        // Load and display the timetable image
+        async function loadTimetableImage() {
+            try {
+                // Read the uploaded timetable image file
+                const imageData = await window.fs.readFile('paste.txt');
+                
+                // Create a blob URL from the image data
+                const blob = new Blob([imageData], { type: 'image/png' });
+                const imageUrl = URL.createObjectURL(blob);
+                
+                // Set the image source
+                const img = document.getElementById('timetableImage');
+                img.src = imageUrl;
+                
+            } catch (error) {
+                console.error('Error loading timetable image:', error);
+                // Fallback: use a placeholder
+                const img = document.getElementById('timetableImage');
+                img.src = 'data:image/svg+xml;base64,' + btoa(`
+                    <svg xmlns="http://www.w3.org/2000/svg" width="400" height="250" viewBox="0 0 400 250">
+                        <rect width="400" height="250" fill="#f8f9fa"/>
+                        <text x="200" y="125" text-anchor="middle" font-family="Arial" font-size="16" fill="#6c757d">Academic Timetable</text>
+                    </svg>
+                `);
+            }
+        }
+
         // Add some interactivity
         document.addEventListener('DOMContentLoaded', function() {
+            // Load the timetable image
+            loadTimetableImage();
+            
             // Smooth scrolling for navigation links
             document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                 anchor.addEventListener('click', function (e) {
