@@ -207,7 +207,7 @@
                             <div class="bg-white rounded-xl shadow-xl p-4">
                                 <!-- Real Timetable Image -->
                                 <div class="bg-white border-2 border-gray-200 rounded-lg p-2 overflow-hidden">
-                                    <img src="timetable-before.png" d="timetableImage" class="w-full h-auto timetable-blur rounded-lg blur-[1px]" alt="Academic Timetable"  />
+                                    <img src="timetable-before.png" id="timetableImage" class="w-full h-auto timetable-blur rounded-lg blur-[1px]" alt="Academic Timetable"  />
                                 </div>
                                 
                                 <!-- PDF Icon -->
@@ -380,7 +380,7 @@
 
     <script>
         // Load and display the timetable image
-        async function loadTimetableImage() {
+        /*async function loadTimetableImage() {
             try {
                 // Read the uploaded timetable image file
                 const imageData = await window.fs.readFile('paste.txt');
@@ -404,12 +404,12 @@
                     </svg>
                 `);
             }
-        }
+        }*/
 
         // Add some interactivity
         document.addEventListener('DOMContentLoaded', function() {
             // Load the timetable image
-            loadTimetableImage();
+            //loadTimetableImage();
             
             // Modal functionality
             const uploadButton = document.getElementById('uploadButton');
@@ -489,7 +489,7 @@
                 
                 // Validate file
                 const maxSize = 25 * 1024 * 1024; // 25MB
-                const allowedTypes = ['application/pdf', 'image/png', 'image/jpeg', 'image/jpg'];
+                const allowedTypes = ['application/pdf'];
                 
                 if (file.size > maxSize) {
                     alert('File size exceeds 25MB limit');
@@ -574,6 +574,10 @@
                 });
             });
         });
+
+        document.addEventListener("DOMContentLoaded", function () {
+        const timetableImage = document.getElementById("timetableImage");
+        console.log("Image element found:", timetableImage); });  
     </script>
 </body>
 </html>
