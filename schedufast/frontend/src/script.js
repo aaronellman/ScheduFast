@@ -75,6 +75,48 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    // Send file to backend when Next button is clicked
+    function sendFile(){
+        if (!selectedFile) {
+            alert('Please select a file first!');
+            return;
+        }
+
+        // Disable Next button during upload
+        nextButton.disabled = true;
+        nextButton.textContent = 'Uploading...';
+
+        // Create FormData and append the file
+        const formData = new FormData();
+        formData.append("file", selectedFile);
+
+        // Send file to backend
+        fetch('http://127.0.0.1:8000/uploadpdf', {
+            method: "POST",
+            body: formData,
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("Upload successful:", data);
+            alert("File uploaded successfully!");
+            closeUploadModal();
+        })
+        .catch(err => {
+            console.error("Upload error:", err);
+            alert("Upload failed! Please try again.");
+        })
+        .finally(() => {
+            // Re-enable Next button
+            nextButton.disabled = false;
+            nextButton.textContent = 'Next';
+        });
+    }
+
     // Handle file selection
     function handleFile(file) {
         selectedFile = file;
@@ -89,7 +131,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         if (!allowedTypes.includes(file.type)) {
-            alert('Only PDF, PNG, and JPG files are supported');
+            alert('Only PDF files are supported');
             return;
         }
 
@@ -102,6 +144,9 @@ document.addEventListener('DOMContentLoaded', function() {
         // Simulate upload progress
         simulateProgress();
     }
+
+    // Add event listener to Next button
+    nextButton.addEventListener('click', sendFile);
 
     // Remove file
     removeFile.addEventListener('click', function(e) {
@@ -165,7 +210,10 @@ document.addEventListener('DOMContentLoaded', function() {
             }, 150);
         });
     });
+
 });
+
+
 
 /*document.addEventListener("DOMContentLoaded", function () {
 const timetableImage = document.getElementById("timetableImage");

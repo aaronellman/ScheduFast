@@ -3,8 +3,17 @@ from fastapi import FastAPI,UploadFile, File
 from app.services.pdf.timetableparse import process_file
 import asyncio
 from concurrent.futures import ThreadPoolExecutor
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # change later for production
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.get("/")
 def root():
@@ -26,4 +35,4 @@ async def upload_pdf(file: UploadFile = File(...)):
     import os
     os.remove(temp_path)
 
-    return {"message": "timetable successfully added to google calendar"}
+    return {"message": "File Uploaded Successfully"}
