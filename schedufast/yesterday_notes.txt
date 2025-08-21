@@ -1,4 +1,4 @@
-Running uv by doing:
+Run uvicorn by doing:
 "cd backend", "uvicorn main:app --reload"
 
 running into problem when running via uvicorn, only first page of pdf is being put in calendar

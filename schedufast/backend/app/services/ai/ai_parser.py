@@ -1,3 +1,4 @@
+# cd backend
 from google import genai
 from google.genai import types
 import json
@@ -190,5 +191,4 @@ def main():
     print(f"\n🎉 Complete! Total events: {len(all_events)}")
     print(f"Results saved to: timetable_events.json")
 
-if __name__ == "__main__":
-    main()
+main()

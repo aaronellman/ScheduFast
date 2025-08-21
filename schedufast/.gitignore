@@ -21,3 +21,5 @@ timetable_converted.xlsx
 ../FastAPI/
 
 tempCodeRunnerFile.*
+
+*.csv
