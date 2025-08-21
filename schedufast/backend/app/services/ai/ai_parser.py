@@ -138,8 +138,7 @@ def process_batch_with_retry(csv_batch, batch_num, structure_info):
         print(f"❌ Batch {batch_num}: API error - {e}")
         return []
 
-def main():
-    csv_file_path = "timetable.csv"
+def main(csv_file_path):
     csv_data = read_csv(csv_file_path)
     
     if csv_data is None:

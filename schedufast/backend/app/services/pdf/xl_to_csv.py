@@ -38,9 +38,8 @@ def convert_excel_to_csv(excel_file_path, csv_file_path=None):
         print(f"❌ Error converting Excel to CSV: {e}")
         return None
 
-def main():
+def main(excel_file):
     # Default file names - you can change these
-    excel_file = "Table_1.xlsx"
     csv_file = "timetable.csv"
     
     # Check for command line arguments
