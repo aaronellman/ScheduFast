@@ -138,7 +138,7 @@ def process_batch_with_retry(csv_batch, batch_num, structure_info):
         print(f"❌ Batch {batch_num}: API error - {e}")
         return []
 
-def main(csv_file_path):
+def main(csv_file_path, output_json="timetable_events.json"):
     csv_data = read_csv(csv_file_path)
     
     if csv_data is None:
@@ -184,7 +184,7 @@ def main(csv_file_path):
             all_events.extend(events)
     
     # Save results
-    with open('timetable_events.json', 'w') as f:
+    with open(output_json, 'w') as f:
         json.dump(all_events, f, indent=2)
     
     print(f"\n🎉 Complete! Total events: {len(all_events)}")

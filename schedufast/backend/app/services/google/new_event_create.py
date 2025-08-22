@@ -8,8 +8,10 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
 SCOPES = ["https://www.googleapis.com/auth/calendar"]
+CALENDAR_NAME = "University Timetable"
 
 def get_service():
+    """Authenticate and return Google Calendar service."""
     creds = None
     if os.path.exists("token.json"):
         creds = Credentials.from_authorized_user_file("token.json", SCOPES)
@@ -25,34 +27,28 @@ def get_service():
             token.write(creds.to_json())
     return build("calendar", "v3", credentials=creds)
 
-def delete_existing_calendar(service, name="University Timetable"):
+def get_or_create_calendar(service, name=CALENDAR_NAME):
+    """Return existing calendar ID or create a new one."""
     calendars = service.calendarList().list().execute()
     for cal in calendars.get("items", []):
         if cal.get("summary") == name:
-            service.calendars().delete(calendarId=cal["id"]).execute()
-            print(f"Deleted existing calendar: {name} ({cal['id']})")
-            return True
-    return False
+            print(f"Using existing calendar: {name} ({cal['id']})")
+            return cal["id"], cal.get("htmlLink")
 
-def create_calendar(service, name="University Timetable"):
-    # Remove old one if present
-    delete_existing_calendar(service, name)
-
-    # Create calendar
+    # If not found, create a new calendar
     body = {"summary": name, "timeZone": "Africa/Johannesburg"}
     calendar = service.calendars().insert(body=body).execute()
     calendar_id = calendar["id"]
-    print(f"Created calendar: {calendar_id}")
 
-    # Remove default reminders
+    # Disable default reminders
     calendar["defaultReminders"] = []
     service.calendars().update(calendarId=calendar_id, body=calendar).execute()
-    print("Disabled all default reminders")
+    print(f"Created new calendar: {calendar_id}")
 
-    # Return calendar ID and web link
     return calendar_id, calendar.get("htmlLink")
 
-def insert_events_from_json(service, calendar_id, json_file):
+def insert_events_from_json(service, calendar_id, json_file, throttle=1):
+    """Insert events from a JSON file into the given calendar."""
     with open(json_file, "r", encoding="utf-8") as f:
         events = json.load(f)
 
@@ -65,15 +61,24 @@ def insert_events_from_json(service, calendar_id, json_file):
                 sendNotifications=False
             ).execute()
             print(f"Inserted event: {event['summary']}")
-            time.sleep(0.1)  # throttle
+            time.sleep(throttle)  # avoid hitting API limits
         except HttpError as e:
             print(f"Error inserting event {event.get('summary')}: {e}")
 
-def main(json_path):
+def insert_multiple_json_files(json_files):
+    """Insert events from multiple JSON files into a single calendar."""
     service = get_service()
-    calendar_id, calendar_link = create_calendar(service)
+    calendar_id, calendar_link = get_or_create_calendar(service)
     print(f"Open your calendar here: {calendar_link}")
-    insert_events_from_json(service, calendar_id, json_path)
+
+    for json_file in json_files:
+        print(f"\nProcessing file: {json_file}")
+        insert_events_from_json(service, calendar_id, json_file)
 
 if __name__ == "__main__":
-    main()
+    # Example usage: replace with your list of JSON files
+    json_files = [
+        r"split_sheets\Table_1_events.json",
+        r"split_sheets\Table_3_events.json"
+    ]
+    insert_multiple_json_files(json_files)
