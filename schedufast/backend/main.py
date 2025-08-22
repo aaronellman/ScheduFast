@@ -30,7 +30,7 @@ async def upload_pdf(file: UploadFile = File(...)):
         temp_path = temp.name
         
     loop = asyncio.get_running_loop()
-    await loop.run_in_executor(None, process_file, temp_path)
+    await process_file(temp_path)
 
     import os
     os.remove(temp_path)

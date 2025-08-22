@@ -1,25 +1,6 @@
 Run uvicorn by doing:
 "cd backend", "uvicorn main:app --reload"
 
-running into problem when running via uvicorn, only first page of pdf is being put in calendar
-START WITH PRINTF DEBUGGING FIRST
 
-How to debug this(from chatgpt):
-Add lots of detailed logging or print statements before and after important steps inside main to pinpoint exactly where it stops.
-
-Use timeouts on external calls or APIs to avoid indefinite waiting.
-
-Make sure all async calls are properly awaited, and no sync blocking calls are called inside async functions.
-
-Run your code with a debugger and set breakpoints inside main to see how far it goes.
-
-Temporarily simplify main to a minimal version and gradually add complexity back until the hang appears.
-
-Check if any third-party library you use is known to have issues when used in async contexts or certain environments.
-
-
-Fixes Tried for stopping at first page:
-    
-    making all required functions async
 
     

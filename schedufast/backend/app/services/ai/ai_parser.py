@@ -189,5 +189,3 @@ def main(csv_file_path):
     
     print(f"\n🎉 Complete! Total events: {len(all_events)}")
     print(f"Results saved to: timetable_events.json")
-
-main()

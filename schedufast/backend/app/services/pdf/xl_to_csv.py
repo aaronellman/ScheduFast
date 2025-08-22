@@ -38,50 +38,26 @@ def convert_excel_to_csv(excel_file_path, csv_file_path=None):
         print(f"❌ Error converting Excel to CSV: {e}")
         return None
 
-def main(excel_file):
-    # Default file names - you can change these
-    csv_file = "timetable.csv"
-    
-    # Check for command line arguments
-    if len(sys.argv) > 1:
-        excel_file = sys.argv[1]
-        if len(sys.argv) > 2:
-            csv_file = sys.argv[2]
-        else:
-            # Auto-generate CSV name from Excel name
-            base_name = os.path.splitext(excel_file)[0]
-            csv_file = f"{base_name}.csv"
-    
+def main(excel_file, csv_file=None):
     print("🔄 Excel to CSV Converter")
     print(f"Input:  {excel_file}")
+    
+    if csv_file is None:
+        # Auto-generate CSV name
+        base_name = os.path.splitext(excel_file)[0]
+        csv_file = f"{base_name}.csv"
+
     print(f"Output: {csv_file}")
     print("-" * 40)
-    
-    # DEBUG: Show current working directory and files
-    print(f"🔍 Current directory: {os.getcwd()}")
-    print("📁 Files in current directory:")
-    try:
-        files = [f for f in os.listdir('.') if f.endswith(('.xlsx', '.xls', '.csv'))]
-        for file in sorted(files):
-            size = os.path.getsize(file)
-            print(f"   {file} ({size} bytes)")
-        
-        if not files:
-            print("   No Excel or CSV files found")
-    except Exception as e:
-        print(f"   Error listing files: {e}")
-    
-    print(f"🔍 Looking for: {os.path.abspath(excel_file)}")
-    print(f"📂 File exists: {os.path.exists(excel_file)}")
-    print(f"📂 Is file: {os.path.isfile(excel_file) if os.path.exists(excel_file) else 'N/A'}")
-    print("-" * 40)
-    
+
     result = convert_excel_to_csv(excel_file, csv_file)
-    
+
     if result:
         print("\n✅ Conversion successful!")
     else:
         print("\n❌ Conversion failed!")
+    
+    return result
 
 if __name__ == "__main__":
     main()
