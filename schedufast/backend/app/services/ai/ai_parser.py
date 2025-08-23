@@ -1,9 +1,9 @@
-# cd backend
 from google import genai
 from google.genai import types
 import json
 import re
 import csv
+import time
 from datetime import datetime, timedelta
 
 client = genai.Client(api_key="AIzaSyBTv7nMb5J21Vjj0fLNiRiw5NelQvV5x4I")
@@ -29,7 +29,7 @@ def parse_csv_structure(csv_content):
     # Find where the schedule starts
     schedule_start = 0
     for i, line in enumerate(lines):
-        if 'Academic Week' in line or 'Assess Week' in line:
+        if 'Academic Week' in line or 'Assess Week' in line or 'ASSESS' in line:
             schedule_start = i
             break
         header.append(line)
@@ -43,7 +43,7 @@ def parse_csv_structure(csv_content):
         if not line.strip():
             continue
         cells = line.split(',')
-        if cells[0]:  # If first cell has a time
+        if cells[0] and ('H' in cells[0] or ':' in cells[0]):  # If first cell has a time
             time_slots.append(cells[0])
     
     return {
@@ -52,6 +52,15 @@ def parse_csv_structure(csv_content):
         'time_slots': time_slots,
         'schedule_lines': lines[schedule_start:]
     }
+
+def is_week_header(line):
+    """Check if a line is a week header"""
+    line_upper = line.upper()
+    has_week_identifier = ('ACADEMIC WEEK' in line_upper or 
+                          'ASSESS WEEK' in line_upper or 
+                          'ASSESS' in line_upper)
+    has_month = any(month.upper() in line_upper for month in ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'])
+    return has_week_identifier and has_month
 
 def create_structured_prompt(csv_batch, structure_info):
     """Create a more structured prompt for the AI"""
@@ -98,45 +107,85 @@ Return ONLY a JSON array with objects like:
   }}
 }}
 
+REMEMBER AlWAYS:
+- "Oct" ALWAYS means October
+- Dates must always be converted to this format e.g.(5 August 2025 becomes 2025-08-05T08:00:00+02:00)
+
 CSV DATA:
 {csv_batch}
 """
     return prompt
 
-def process_batch_with_retry(csv_batch, batch_num, structure_info):
-    """Process a batch with improved error handling"""
+def process_batch_with_retry(csv_batch, batch_num, structure_info, max_retries=3):
+    """Process a batch with improved error handling and retry logic"""
     prompt = create_structured_prompt(csv_batch, structure_info)
     
-    try:
-        response = client.models.generate_content(
-            model="gemini-2.0-flash-001",
-            contents=[prompt],
-            config=types.GenerateContentConfig(
-                max_output_tokens=8192,
-                temperature=0.1,
+    for attempt in range(max_retries):
+        try:
+            response = client.models.generate_content(
+                model="gemini-2.0-flash-001",
+                contents=[prompt],
+                config=types.GenerateContentConfig(
+                    max_output_tokens=8192,
+                    temperature=0.1,
+                )
             )
-        )
-        
-        # Clean the response
-        response_text = response.text.strip()
-        response_text = re.sub(r'^```json\s*|\s*```$', '', response_text)
-        
-        # Parse JSON
-        events = json.loads(response_text)
-        print(f"✅ Batch {batch_num}: {len(events)} events processed")
-        return events
-        
-    except json.JSONDecodeError as e:
-        print(f"❌ Batch {batch_num}: JSON parsing failed - {e}")
-        # Save for debugging
-        with open(f'debug_batch_{batch_num}.txt', 'w') as f:
-            f.write(f"Error: {e}\n\n")
-            f.write("Response text:\n")
-            f.write(response_text)
-        return []
-    except Exception as e:
-        print(f"❌ Batch {batch_num}: API error - {e}")
-        return []
+            
+            # Clean the response
+            response_text = response.text.strip()
+            response_text = re.sub(r'^```json\s*|\s*```$', '', response_text)
+            
+            # Parse JSON
+            events = json.loads(response_text)
+            print(f"✅ Batch {batch_num}: {len(events)} events processed")
+            return events
+            
+        except json.JSONDecodeError as e:
+            print(f"❌ Batch {batch_num}: JSON parsing failed - {e}")
+            # Save for debugging
+            with open(f'debug_batch_{batch_num}.txt', 'w') as f:
+                f.write(f"Attempt {attempt + 1}\n")
+                f.write(f"Error: {e}\n\n")
+                f.write("Response text:\n")
+                f.write(response_text)
+            return []
+            
+        except Exception as e:
+            error_str = str(e)
+            
+            # Check for quota exceeded error
+            if "RESOURCE_EXHAUSTED" in error_str and "quota" in error_str.lower():
+                print(f"❌ Batch {batch_num}: Daily quota exceeded")
+                print("💡 Options:")
+                print("   1. Wait until quota resets (usually midnight UTC)")
+                print("   2. Upgrade to paid plan for higher limits")
+                print("   3. Process remaining batches tomorrow")
+                
+                # Save unprocessed batch for later
+                with open(f'unprocessed_batch_{batch_num}.csv', 'w') as f:
+                    f.write(csv_batch)
+                print(f"   📁 Batch saved as 'unprocessed_batch_{batch_num}.csv'")
+                return []
+                
+            # Check for rate limiting (429 errors)
+            elif "429" in error_str:
+                wait_time = min(60 * (2 ** attempt), 300)  # Exponential backoff, max 5 minutes
+                print(f"⏱️ Batch {batch_num}: Rate limited, waiting {wait_time}s before retry {attempt + 1}/{max_retries}")
+                time.sleep(wait_time)
+                continue
+                
+            else:
+                print(f"❌ Batch {batch_num}: API error - {e}")
+                if attempt < max_retries - 1:
+                    wait_time = 5 * (attempt + 1)  # Linear backoff for other errors
+                    print(f"⏱️ Retrying in {wait_time}s...")
+                    time.sleep(wait_time)
+                    continue
+                else:
+                    return []
+    
+    print(f"❌ Batch {batch_num}: Failed after {max_retries} attempts")
+    return []
 
 def main(csv_file_path, output_json="timetable_events.json"):
     csv_data = read_csv(csv_file_path)
@@ -148,32 +197,33 @@ def main(csv_file_path, output_json="timetable_events.json"):
     # Parse the CSV structure first
     structure_info = parse_csv_structure(csv_data)
     
-    # Split into weekly batches
+    # Split into weekly batches - IMPROVED LOGIC
     lines = csv_data.split('\n')
     batches = []
     current_batch = []
-    in_schedule = False
+    found_first_week = False
     
     for line in lines:
-        if 'Academic Week' in line or 'Assess Week' in line:
-            in_schedule = True
+        if is_week_header(line):
+            found_first_week = True
+            # If we have a current batch, save it before starting a new one
             if current_batch:
                 batches.append('\n'.join(current_batch))
-                current_batch = []
-        elif not in_schedule:
-            continue
-            
-        current_batch.append(line)
-        
-        # If we hit a new week, create a batch
-        if line.startswith('Week ') and len(current_batch) > 1:
-            batches.append('\n'.join(current_batch))
-            current_batch = [current_batch[0]]  # Keep the header
+            # Start new batch with this week header
+            current_batch = [line]
+        elif found_first_week:  # Only add lines after we've found the first week header
+            current_batch.append(line)
     
+    # Don't forget the last batch
     if current_batch:
         batches.append('\n'.join(current_batch))
     
     print(f"Split timetable into {len(batches)} batches")
+    
+    # Debug: Print first few lines of each batch
+    for i, batch in enumerate(batches, 1):
+        first_line = batch.split('\n')[0]
+        print(f"Batch {i}: Starts with '{first_line}'")
     
     # Process each batch
     all_events = []
@@ -181,11 +231,51 @@ def main(csv_file_path, output_json="timetable_events.json"):
         print(f"\nProcessing batch {i}/{len(batches)}...")
         events = process_batch_with_retry(batch, i, structure_info)
         if events:
+            print(f"📝 Adding {len(events)} events from batch {i} to collection")
             all_events.extend(events)
+            print(f"📊 Total events so far: {len(all_events)}")
+        else:
+            print(f"⚠️ No events returned from batch {i}")
+    
+    print(f"\n📋 Final event count before saving: {len(all_events)}")
     
     # Save results
     with open(output_json, 'w') as f:
         json.dump(all_events, f, indent=2)
     
     print(f"\n🎉 Complete! Total events: {len(all_events)}")
-    print(f"Results saved to: timetable_events.json")
+    print(f"Results saved to: {output_json}")
+    
+    # Debug: Check what was actually saved
+    try:
+        with open(output_json, 'r') as f:
+            saved_events = json.load(f)
+        print(f"🔍 Verification: {len(saved_events)} events found in saved JSON file")
+    except Exception as e:
+        print(f"❌ Error reading back saved file: {e}")
+
+# For testing the batching logic
+def test_batching(csv_content):
+    """Test function to see how the CSV gets split into batches"""
+    lines = csv_content.split('\n')
+    batches = []
+    current_batch = []
+    
+    for line in lines:
+        if is_week_header(line):
+            if current_batch:
+                batches.append('\n'.join(current_batch))
+            current_batch = [line]
+        elif current_batch:
+            current_batch.append(line)
+    
+    if current_batch:
+        batches.append('\n'.join(current_batch))
+    
+    print(f"Found {len(batches)} batches:")
+    for i, batch in enumerate(batches, 1):
+        lines_in_batch = len([l for l in batch.split('\n') if l.strip()])
+        first_line = batch.split('\n')[0]
+        print(f"  Batch {i}: {lines_in_batch} lines, starts with: '{first_line}'")
+    
+    return batches
