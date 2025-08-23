@@ -10,9 +10,9 @@ import os
 
 load_dotenv()
 
-api_key= os.getenv("GENAI_API_KEY")
+API_KEY = os.getenv("GENAI_API_KEY")
 
-client = genai.Client(api_key)
+client = genai.Client(api_key=API_KEY)
 
 def read_csv(file_path):
     """Read CSV file and return its content as text"""
