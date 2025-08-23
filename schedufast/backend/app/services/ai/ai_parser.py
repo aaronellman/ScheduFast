@@ -5,8 +5,14 @@ import re
 import csv
 import time
 from datetime import datetime, timedelta
+from dotenv import load_dotenv
+import os
 
-client = genai.Client(api_key="AIzaSyBTv7nMb5J21Vjj0fLNiRiw5NelQvV5x4I")
+load_dotenv()
+
+api_key= os.getenv("GENAI_API_KEY")
+
+client = genai.Client(api_key)
 
 def read_csv(file_path):
     """Read CSV file and return its content as text"""
