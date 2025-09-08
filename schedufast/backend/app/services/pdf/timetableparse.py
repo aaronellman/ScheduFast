@@ -10,7 +10,7 @@ import asyncio
 def getfilename(path):
     return os.path.basename(path)
 
-async def process_file(new_path):
+def process_file(new_path):
     pdf_path = new_path
     file_name = getfilename(new_path)
     xl_path = pdf_path.replace(".pdf", ".xlsx")

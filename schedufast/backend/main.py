@@ -4,6 +4,7 @@ from app.services.pdf.timetableparse import process_file
 import asyncio
 from concurrent.futures import ThreadPoolExecutor
 from fastapi.middleware.cors import CORSMiddleware
+import os
 
 app = FastAPI()
 
@@ -15,6 +16,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+def save_temp_file(file_bytes):
+    with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as temp:
+        temp.write(file_bytes)
+        temp.flush()
+        return temp.name
+
 @app.get("/")
 def root():
     return {"Hello": "World"}
@@ -24,15 +31,11 @@ async def upload_pdf(file: UploadFile = File(...)):
     #Getting actual bytes from the file
     pdf_bytes = await file.read()
 
-    with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as temp:
-        temp.write(pdf_bytes)
-        temp.flush()
-        temp_path = temp.name
+    temp_path = save_temp_file(pdf_bytes)
         
     loop = asyncio.get_running_loop()
-    await process_file(temp_path)
+    await loop.run_in_executor(None, process_file, temp_path)
 
-    import os
     os.remove(temp_path)
 
     return {"message": "File Uploaded Successfully"}
