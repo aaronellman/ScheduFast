@@ -6,6 +6,7 @@ from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
+from dotenv import load_dotenv
 
 SCOPES = ["https://www.googleapis.com/auth/calendar"]
 CALENDAR_NAME = "University Timetable"
@@ -19,10 +20,18 @@ def get_service():
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
         else:
-            flow = InstalledAppFlow.from_client_secrets_file(
-                r"C:\GitHub\SchedEase\schedufast\credentials.json", SCOPES
-            )
-            creds = flow.run_local_server(port=0)
+            load_dotenv()
+            client_config = {
+                "installed": {
+                    "client_id": os.getenv("GOOGLE_CLIENT_ID"),
+                    "client_secret": os.getenv("GOOGLE_CLIENT_SECRET"),
+                    "auth_uri": "https://accounts.google.com/o/oauth2/auth","token_uri":"https://oauth2.googleapis.com/token",
+                    "redirect_uris": ["http://localhost:8000"],  
+                }
+            }
+
+            flow = InstalledAppFlow.from_client_config(client_config, SCOPES)
+            creds = flow.run_local_server(port=5500)
         with open("token.json", "w") as token:
             token.write(creds.to_json())
     return build("calendar", "v3", credentials=creds)
