@@ -10,4 +10,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Ping Render service
-        run: curl -s https://schedufast.onrender.com
+        run: curl -s https://schedufast.onrender.com/ping

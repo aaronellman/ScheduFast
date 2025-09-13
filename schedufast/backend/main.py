@@ -39,3 +39,8 @@ async def upload_pdf(file: UploadFile = File(...)):
     os.remove(temp_path)
 
     return {"message": "File Uploaded Successfully"}
+
+#ping endpoint for workflow to keep website awake
+@app.get("/ping")
+def ping():
+    return {"status": "ok"}
