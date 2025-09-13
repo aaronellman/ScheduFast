@@ -1,10 +1,10 @@
-import tempfile
 from fastapi import FastAPI,UploadFile, File
 from app.services.pdf.timetableparse import process_file
 import asyncio
 from concurrent.futures import ThreadPoolExecutor
 from fastapi.middleware.cors import CORSMiddleware
 import os
+from utils import save_temp_file
 
 app = FastAPI()
 
@@ -15,12 +15,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-def save_temp_file(file_bytes):
-    with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as temp:
-        temp.write(file_bytes)
-        temp.flush()
-        return temp.name
 
 @app.get("/")
 def root():
