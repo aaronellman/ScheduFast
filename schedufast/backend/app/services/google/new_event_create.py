@@ -6,12 +6,14 @@ from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
+from googleapiclient.http import BatchHttpRequest
 from dotenv import load_dotenv
+from utils import callback
 
 SCOPES = ["https://www.googleapis.com/auth/calendar"]
 CALENDAR_NAME = "University Timetable"
 
-def get_service():
+def get_service() -> build:
     """Authenticate and return Google Calendar service."""
     creds = None
     if os.path.exists("token.json"):
@@ -34,6 +36,7 @@ def get_service():
             creds = flow.run_local_server(port=5500)
         with open("token.json", "w") as token:
             token.write(creds.to_json())
+    
     return build("calendar", "v3", credentials=creds)
 
 def get_or_create_calendar(service, name=CALENDAR_NAME):
@@ -61,18 +64,24 @@ def insert_events_from_json(service, calendar_id, json_file, throttle=1):
     with open(json_file, "r", encoding="utf-8") as f:
         events = json.load(f)
 
-    for event in events:
+    batch = BatchHttpRequest(callback=callback, batch_uri="https://www.googleapis.com/batch/calendar/v3")
+
+    for i,event in enumerate(events):
         try:
-            service.events().insert(
+            request = service.events().insert(
                 calendarId=calendar_id,
                 body=event,
                 sendUpdates="none",
                 sendNotifications=False
-            ).execute()
+            )
+
+            batch.add(request, request_id=str(i))
+
             print(f"Inserted event: {event['summary']}")
-            time.sleep(throttle)  # avoid hitting API limits
+            #time.sleep(throttle)  # throttling requests
         except HttpError as e:
             print(f"Error inserting event {event.get('summary')}: {e}")
+    batch.execute()
 
 def insert_multiple_json_files(json_files):
     """Insert events from multiple JSON files into a single calendar."""
