@@ -91,7 +91,7 @@ document.addEventListener('DOMContentLoaded', function() {
         formData.append("file", selectedFile);
 
         // Send file to backend
-        fetch('http://127.0.0.1:8000/uploadpdf', {
+        fetch('https://schedufast.onrender.com/uploadpdf', {
             method: "POST",
             body: formData,
         })

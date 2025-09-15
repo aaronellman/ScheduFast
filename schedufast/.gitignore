@@ -25,3 +25,5 @@ tempCodeRunnerFile.*
 *.csv
 
 split_sheets/
+
+node_modules/
