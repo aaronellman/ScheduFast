@@ -61,6 +61,7 @@ def get_or_create_calendar(service, name=CALENDAR_NAME):
 
 def insert_events_from_json(service, calendar_id, json_file, throttle=1):
     """Insert events from a JSON file into the given calendar."""
+    
     with open(json_file, "r", encoding="utf-8") as f:
         events = json.load(f)
 
@@ -74,13 +75,14 @@ def insert_events_from_json(service, calendar_id, json_file, throttle=1):
                 sendUpdates="none",
                 sendNotifications=False
             )
-
-            batch.add(request, request_id=str(i))
-
-            print(f"Inserted event: {event['summary']}")
-            #time.sleep(throttle)  # throttling requests
         except HttpError as e:
-            print(f"Error inserting event {event.get('summary')}: {e}")
+            print(f"Error creating event {event.get('summary')}: {e}")
+        
+        batch.add(request, request_id=str(i))
+
+            #print(f"Inserted event: {event['summary']}")
+            #time.sleep(throttle)  # throttling requests
+        
     batch.execute()
 
 def insert_multiple_json_files(json_files):

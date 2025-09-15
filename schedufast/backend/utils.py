@@ -9,5 +9,3 @@ def save_temp_file(file_bytes, suffix=".pdf"):
 def callback(request_id, response, exception):
     if exception:
         print(f"Error in request {request_id}: {exception}")
-    else:
-        print(f"Request {request_id} succeeded: {response}")
