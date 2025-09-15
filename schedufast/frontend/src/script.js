@@ -1,7 +1,7 @@
 import { supabase } from './supabase.js'
 
 document.addEventListener('DOMContentLoaded', function() {
-
+    
     // Modal functionality
     const uploadButton = document.getElementById('uploadButton');
     const uploadModal = document.getElementById('uploadModal');
@@ -90,7 +90,7 @@ document.addEventListener('DOMContentLoaded', function() {
         formData.append("file", selectedFile);
 
         // Send file to backend
-        fetch('https://schedufast.onrender.com/uploadpdf', {
+        fetch('http://127.0.0.1:8000', {
             method: "POST",
             body: formData,
         })
@@ -210,6 +210,21 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
+    //signups
+    const navSignUpBtn = document.getElementById('navSignUpBtn');
+    if (navSignUpBtn) {
+        navSignUpBtn.addEventListener('click', function() {
+            window.location.href = '/signup';
+        });
+    }
+
+    // Hero section Sign Up button
+    const heroSignUpBtn = document.getElementById('heroSignUpBtn');
+    if (heroSignUpBtn) {
+        heroSignUpBtn.addEventListener('click', function() {
+            window.location.href = '/signup';
+        });
+    }
 
     //handling when user signs in/out
     supabase.auth.onAuthStateChange((event, session) => {
@@ -230,7 +245,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function showLoginForm() {
-        
+
     }
 
 });
