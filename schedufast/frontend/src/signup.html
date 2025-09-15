@@ -72,9 +72,9 @@
         <div class="absolute bottom-40 left-20 w-4 h-4 bg-white rounded-full opacity-50 floating-animation" style="animation-delay: 4s;"></div>
         <div class="absolute top-60 right-40 w-2 h-2 bg-white rounded-full opacity-30 floating-animation" style="animation-delay: 3s;"></div>
         
-        <div class="max-w-md w-full space-y-8">
+        <div class="max-w-2xl w-full space-y-8">
             <!-- Sign Up Form Card -->
-            <div class="bg-white rounded-2xl shadow-2xl p-8">
+            <div class="bg-white rounded-2xl shadow-2xl p-12">
                 <!-- Header -->
                 <div class="text-center mb-8">
                     <h2 class="text-3xl font-bold text-gray-900 mb-2">Create your account</h2>
@@ -82,7 +82,7 @@
                 </div>
 
                 <!-- Social Sign Up Options -->
-                <div class="space-y-3 mb-6">
+                <div class="grid grid-cols-1 gap-3 mb-6">
                     <button class="w-full flex items-center justify-center px-4 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">
                         <svg class="w-5 h-5 mr-3" viewBox="0 0 24 24">
                             <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -92,8 +92,6 @@
                         </svg>
                         Continue with Google
                     </button>
-                    
-                    
                 </div>
 
                 <!-- Divider -->
@@ -108,65 +106,68 @@
 
                 <!-- Sign Up Form -->
                 <form class="space-y-6" id="signupForm">
-                    <div>
-                        <label for="fullName" class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
-                        <input 
-                            id="fullName" 
-                            name="fullName" 
-                            type="text" 
-                            required 
-                            class="w-full px-3 py-3 border border-gray-300 rounded-lg input-focus transition-all duration-200 outline-none"
-                            placeholder="Enter your full name"
-                        >
-                    </div>
-
-                    <div>
-                        <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
-                        <input 
-                            id="email" 
-                            name="email" 
-                            type="email" 
-                            required 
-                            class="w-full px-3 py-3 border border-gray-300 rounded-lg input-focus transition-all duration-200 outline-none"
-                            placeholder="Enter your email"
-                        >
-                    </div>
-
-                    <div>
-                        <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
-                        <div class="relative">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="fullName" class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
                             <input 
-                                id="password" 
-                                name="password" 
+                                id="fullName" 
+                                name="fullName" 
+                                type="text" 
+                                required 
+                                class="w-full px-3 py-3 border border-gray-300 rounded-lg input-focus transition-all duration-200 outline-none"
+                                placeholder="Enter your full name"
+                            >
+                        </div>
+
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                            <input 
+                                id="email" 
+                                name="email" 
+                                type="email" 
+                                required 
+                                class="w-full px-3 py-3 border border-gray-300 rounded-lg input-focus transition-all duration-200 outline-none"
+                                placeholder="Enter your email"
+                            >
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                            <div class="relative">
+                                <input 
+                                    id="password" 
+                                    name="password" 
+                                    type="password" 
+                                    required 
+                                    class="w-full px-3 py-3 border border-gray-300 rounded-lg input-focus transition-all duration-200 outline-none pr-10"
+                                    placeholder="Create a password"
+                                >
+                                <button type="button" id="togglePassword" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                            <p class="mt-1 text-sm text-gray-500">Must be at least 8 characters long</p>
+                        </div>
+
+                        <div>
+                            <label for="confirmPassword" class="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
+                            <input 
+                                id="confirmPassword" 
+                                name="confirmPassword" 
                                 type="password" 
                                 required 
-                                class="w-full px-3 py-3 border border-gray-300 rounded-lg input-focus transition-all duration-200 outline-none pr-10"
-                                placeholder="Create a password"
+                                class="w-full px-3 py-3 border border-gray-300 rounded-lg input-focus transition-all duration-200 outline-none"
+                                placeholder="Confirm your password"
                             >
-                            <button type="button" id="togglePassword" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-                                </svg>
-                            </button>
                         </div>
-                        <p class="mt-1 text-sm text-gray-500">Must be at least 8 characters long</p>
-                    </div>
-
-                    <div>
-                        <label for="confirmPassword" class="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
-                        <input 
-                            id="confirmPassword" 
-                            name="confirmPassword" 
-                            type="password" 
-                            required 
-                            class="w-full px-3 py-3 border border-gray-300 rounded-lg input-focus transition-all duration-200 outline-none"
-                            placeholder="Confirm your password"
-                        >
                     </div>
 
                     <!-- Terms and Privacy -->
-                    <div class="flex items-start">
+                    <div class="flex items-start justify-center">
                         <input 
                             id="terms" 
                             name="terms" 
@@ -234,14 +235,14 @@
             const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
             password.setAttribute('type', type);
             
-            // Toggle eye icon
-            this.innerHTML = type === 'password' 
+            // Toggle eye icon - corrected logic
+            this.innerHTML = type === 'text' 
                 ? `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"></path>
                    </svg>`
                 : `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"></path>
+                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                    </svg>`;
         });
 
