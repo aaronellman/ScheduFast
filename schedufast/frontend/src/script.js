@@ -1,8 +1,7 @@
-// Add some interactivity
+import { supabase } from './supabase.js'
+
 document.addEventListener('DOMContentLoaded', function() {
-    // Load the timetable image
-    //loadTimetableImage();
-    
+
     // Modal functionality
     const uploadButton = document.getElementById('uploadButton');
     const uploadModal = document.getElementById('uploadModal');
@@ -210,6 +209,29 @@ document.addEventListener('DOMContentLoaded', function() {
             }, 150);
         });
     });
+
+
+    //handling when user signs in/out
+    supabase.auth.onAuthStateChange((event, session) => {
+        if (event === 'SIGNED_IN') {
+            console.log('User signed in:', session.user)
+            
+            showDashboard()
+        } else if (event === 'SIGNED_OUT') {
+            console.log('User signed out')
+            
+            showLoginForm() 
+        }
+
+    })
+
+    function showDashboard() {
+    // Update your UI here
+    }
+
+    function showLoginForm() {
+        
+    }
 
 });
 
