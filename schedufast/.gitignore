@@ -27,3 +27,5 @@ tempCodeRunnerFile.*
 split_sheets/
 
 node_modules/
+
+dist
