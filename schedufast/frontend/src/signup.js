@@ -30,14 +30,19 @@ document.addEventListener('DOMContentLoaded', function() {
         signupForm.addEventListener('submit', handleSignup);
     }
 
+    //google sign in button listener
+    const googleSignInBtn = document.getElementById('google-signin-btn');
+    if (googleSignInBtn) {
+        googleSignInBtn.addEventListener('click', handleGoogleSignIn);
+    }
+
     // Auth state change listener
     supabase.auth.onAuthStateChange((event, session) => {
         if (event === 'SIGNED_IN') {
             console.log('User signed in:', session.user);
             showSuccessMessage('Welcome! Redirecting to dashboard...');
-            // Redirect after a short delay to show the success message
             setTimeout(() => {
-                window.location.href = '/'; // Redirect to main page or dashboard
+                window.location.href = '/'; 
             }, 2000);
         }
     });
@@ -111,38 +116,55 @@ function validateForm(fullName, email, password, confirmPassword, termsAccepted)
         return false;
     }
     
-    // Validate full name
+
     if (fullName.length < 2) {
         showErrorMessage('Full name must be at least 2 characters long');
         return false;
     }
     
-    // Validate email
+
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
         showErrorMessage('Please enter a valid email address');
         return false;
     }
     
-    // Validate password
     if (password.length < 8) {
         showErrorMessage('Password must be at least 8 characters long');
         return false;
     }
     
-    // Check password match
     if (password !== confirmPassword) {
         showErrorMessage('Passwords do not match');
         return false;
     }
     
-    // Check terms acceptance
     if (!termsAccepted) {
         showErrorMessage('Please accept the Terms of Service and Privacy Policy');
         return false;
     }
     
     return true;
+}
+
+async function handleGoogleSignIn() {
+    try {
+        const { data, error } = await supabase.auth.signInWithOAuth({
+            provider: 'google',
+            options: {
+                redirectTo: 'http://localhost:5173/auth/callback',
+                scopes: 'https://www.googleapis.com/auth/calendar'
+            }
+        });
+
+        if (error) {
+            throw error;
+        }
+
+    } catch (error) {
+        console.error('Google Sign-in Error:', error);
+        showErrorMessage('Sign in with Google failed. Please try again.');
+    }
 }
 
 function showSuccessMessage(message) {
