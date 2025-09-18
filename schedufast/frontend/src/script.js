@@ -90,7 +90,9 @@ document.addEventListener('DOMContentLoaded', function() {
         formData.append("file", selectedFile);
 
         // Send file to backend
-        fetch('http://127.0.0.1:8000', {
+        //http://127.0.0.1:8000/uploadpdf
+        //https://schedufast.onrender.com/uploadpdf
+        fetch('https://schedufast.onrender.com/uploadpdf', {
             method: "POST",
             body: formData,
         })
@@ -214,7 +216,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const navSignUpBtn = document.getElementById('navSignUpBtn');
     if (navSignUpBtn) {
         navSignUpBtn.addEventListener('click', function() {
-            window.location.href = '/signup';
+            window.location.href = '/signup.html';
         });
     }
 
@@ -222,7 +224,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const heroSignUpBtn = document.getElementById('heroSignUpBtn');
     if (heroSignUpBtn) {
         heroSignUpBtn.addEventListener('click', function() {
-            window.location.href = '/signup';
+            window.location.href = '/signup.html';
         });
     }
 
